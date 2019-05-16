@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script type="text/javascript">
+      var ctrl_pressed=0;
+      var tag="";
+      function setIndex(idx){
+	  $("input").attr("class","normal")
+	  tag="input#"+idx;
+	  $(tag).attr("class","selected")
+	  $(tag).focus();
+	  $("p#info").html("switch to "+tag);
+      };
+      $(document).ready(function() {
+	  setIndex(0);
+	  $(window).keydown(function(event){
+	      var keycode=event.keyCode;
+	      if(keycode==17){
+		  ctrl_pressed=1;
+		  $("p#info").html("enter switch mode, press a number ");
+	      }
+	      else{
+		  if(ctrl_pressed==1){
+		      ctrl_pressed=0;
+		      if(keycode>=48&&keycode<=57){
+			  setIndex((keycode-48));
+		      }
+		      return false;
+		  }
+	      }
+	      return true;
+	  });
+      });   
+     </script>
+    <style>
+    input.normal {
+	 border-style : dashed ;
+     }
+    input.selected {
+	 border-style : solid ;
+     }
+    </style>
+  </head>
+  <body bgcolor="#C5B599">
+    <form action="https://www.google.com/search"  method="get" name="google">
+      <input id="0" class="normal" placeholder="google (ctrl, 0)" autocomplete="on"  name="q"   type="text" size=40  autofocus>
+    </form>
+    <br>
+    <form action="https://www.google.com/search"  method="get" name="google">
+      <input name="sitesearch" type="hidden" value="https://en.wikipedia.org">
+      <input  id="1" class="normal"   placeholder="wiki (ctrl,1)" autocomplete="on"  name="q"   type="text" size=40 >
+    </form>
+    <br>
+    <p id="info"></p>
+  </body>
+</html>
