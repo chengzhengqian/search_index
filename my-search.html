@@ -5,31 +5,71 @@
     <script type="text/javascript">
       var ctrl_pressed=0;
       var tag="";
-      function setIndex(idx){
-	  $("input").attr("class","normal")
-	  tag="input#"+idx;
-	  $(tag).attr("class","selected")
-	  $(tag).focus();
-	  $("p#info").html("switch to "+tag);
+      var index=0;
+      var google={name:"google",
+		  url:function(input){
+		      return "https://www.google.com/search?q="+input;
+		  }
+		 };
+      var wiki={name:"wikipedia",
+		  url:function(input){
+		      return "https://en.wikipedia.org/wiki/Special:Search/"+input;
+		  }
+		 };
+      var entries={0:google,
+		   1:wiki
+		  };
+      function showInfo(s){
+	  $("p#info").html(s);
       };
+      function showIndex(){
+	  if(entries.hasOwnProperty(index))
+	      showInfo( "search with "+entries[index].name);
+	  else
+	      showInfo("index "+index+" is not defined");
+      };
+      function runSearch(search_input){
+	  if(entries.hasOwnProperty(index)){
+	      showInfo("navigate to "+search_input);
+	      window.open(entries[index].url(search_input));
+	  }
+	  else
+	      showInfo("index "+index+" could not available");
+      }
+      function showAllEntries(entries){
+	  var result=""
+	  Object.getOwnPropertyNames(entries).forEach(
+	      function(v,i,a){
+		  result=result+v+":"+entries[v].name+"; "
+	      }
+	  );
+	  return result;
+      }
       $(document).ready(function() {
-	  setIndex(0);
+	  index=0;
+	  showIndex();
 	  $(window).keydown(function(event){
 	      var keycode=event.keyCode;
-	      if(keycode==17){
+	      if(keycode==17 && ctrl_pressed==0){
 		  ctrl_pressed=1;
-		  $("p#info").html("enter switch mode, press a number ");
+		  showInfo("enter switch mode: "+showAllEntries(entries));
+	      }
+	      else if(keycode==13){
+		  var search_input=$("input#url").val();
+		  runSearch(search_input);
 	      }
 	      else{
 		  if(ctrl_pressed==1){
-		      ctrl_pressed=0;
 		      if(keycode>=48&&keycode<=57){
-			  setIndex((keycode-48));
+			  ctrl_pressed=0;
+			  index=keycode-48;
+			  showIndex();
+			  return false;
 		      }
-		      return false;
 		  }
 	      }
-	      return true;
+	      $("p#keycode").html(keycode)
+	      
 	  });
       });   
      </script>
@@ -43,16 +83,9 @@
     </style>
   </head>
   <body bgcolor="#C5B599">
-    <form action="https://www.google.com/search"  method="get" name="google">
-      <input id="0" class="normal" placeholder="google (ctrl, 0)" autocomplete="on"  name="q"   type="text" size=40  autofocus>
-    </form>
-    <br>
-    <form action="https://www.google.com/search"  method="get" name="google">
-      <input name="sitesearch" type="hidden" value="https://en.wikipedia.org">
-      <input  id="1" class="normal"   placeholder="wiki (ctrl,1)" autocomplete="on"  name="q"   type="text" size=40 >
-    </form>
-    <br>
+    <input id="url" class="selected" placeholder="url" autocomplete="on" size=40 autofocus>
     <p id="info"></p>
+    <p id="keycode"></p>
     <br>
     <a href="http://gen.lib.rus.ec/">books</a>
     <a href="https://www.google.com/gmail/">mail</a>
