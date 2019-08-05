@@ -6,6 +6,7 @@
       var ctrl_pressed=0;
       var tag="";
       var index=0;
+      var is_debug=false;
       var google={name:"google",
 		  url:function(input){
 		      return "https://www.google.com/search?q="+input;
@@ -16,8 +17,14 @@
 		      return "https://en.wikipedia.org/wiki/Special:Search/"+input;
 		  }
 		 };
+      var local={name:"localhost",
+		  url:function(input){
+		      return "http:127.0.0.1:"+input;
+		  }
+		 };
       var entries={0:google,
-		   1:wiki
+		   1:wiki,
+		   2:local
 		  };
       function showInfo(s){
 	  $("p#info").html(s);
@@ -68,8 +75,8 @@
 		      }
 		  }
 	      }
-	      $("p#keycode").html(keycode)
-	      
+	      if(is_debug)
+		  $("p#keycode").html(keycode)
 	  });
       });   
      </script>
